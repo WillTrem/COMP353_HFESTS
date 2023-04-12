@@ -14,6 +14,7 @@ const SiteBody = () => {
   const [tableList, setTableList] = useState();
   const [rowEdit, setRowEdit] = useState();
   const [rowAdd, setRowAdd] = useState();
+  const [rowDelete, setRowDelete] = useState();
 
   useEffect(() => {
     axios({
@@ -52,6 +53,7 @@ const SiteBody = () => {
   const handleModalClose = () => {
     rowEdit && setRowEdit(undefined);
     rowAdd && setRowAdd(undefined);
+    rowDelete && setRowDelete(undefined);
   };
 
   const handleEditModalSubmit = (e) => {
@@ -88,6 +90,21 @@ const SiteBody = () => {
       data: {
         tableName: selectedTable,
         row: fullData,
+      },
+    }).then((result) => {
+      console.log(result.data);
+    });
+    handleOnDropdownSelect(selectedTable);
+    handleModalClose();
+  };
+  const handleDeleteRow = () => {
+    axios({
+      method: 'post',
+      url: `http://localhost:8000/PHP/deleteRow.php`,
+      headers: { 'content-type': 'application/json' },
+      data: {
+        tableName: selectedTable,
+        row: rowDelete,
       },
     }).then((result) => {
       console.log(result.data);
@@ -147,7 +164,12 @@ const SiteBody = () => {
                             ></AiFillEdit>
                           </td>
                           <td>
-                            <AiFillCloseSquare className='block h-7 w-7 text-red-700 hover:cursor-pointer hover:text-red-800'></AiFillCloseSquare>
+                            <AiFillCloseSquare
+                              className='block h-7 w-7 text-red-700 hover:cursor-pointer hover:text-red-800'
+                              onClick={() => {
+                                setRowDelete(row);
+                              }}
+                            ></AiFillCloseSquare>
                           </td>
                         </tr>
                       </>
@@ -204,6 +226,20 @@ const SiteBody = () => {
             </Button>
           </Form>
         </Modal.Body>
+      </Modal>
+      <Modal show={rowDelete} centered onHide={handleModalClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>Remove tuple in {selectedTable}</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>Are you sure you want to delete this row?</Modal.Body>
+        <Modal.Footer>
+          <Button variant='danger' onClick={handleDeleteRow}>
+            Delete
+          </Button>
+          <Button variant='secondary' onClick={handleModalClose}>
+            Cancel
+          </Button>
+        </Modal.Footer>
       </Modal>
     </div>
   );
