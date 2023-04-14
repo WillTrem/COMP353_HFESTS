@@ -12,21 +12,19 @@
     $_POST = json_decode(file_get_contents('php://input'), true);
 
     if($_POST){
-        $tableName = $_POST['tableName'];
         $row = $_POST['row'];
-        $keyList = array();
-        $valueList = array();
-
-        foreach($row as $key => $value){
-          array_push($keyList, $key);
-          array_push($valueList, "'$value'");
-        }
-        $joinedKeys= "(" . join(", ", $keyList) . ")";
-        $joinedValues= "(" . join(", ", $valueList) . ")";
+        $name = array_shift($row);
+        $address = array_shift($row);
+        $fieldList = array();
         
-        $sql = "INSERT INTO nbc353_4.$tableName $joinedKeys 
-                VALUES $joinedValues";
-        echo $sql;
+        foreach($row as $key => $value){
+          array_push($fieldList, "$key='$value'");
+        }
+        $joinedAttributes = join(", ", $fieldList);
+        
+        $sql = "UPDATE nbc353_4.Facilities 
+                SET $joinedAttributes
+                WHERE name = '$name' AND address = '$address';";
         $result = $conn->query($sql);
         echo $result;
     }
