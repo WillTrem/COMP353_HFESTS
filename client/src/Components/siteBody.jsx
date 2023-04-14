@@ -348,11 +348,26 @@ const SiteBody = () => {
           </Form>
         </Modal.Body>
       </Modal>
-      <Modal show={rowDelete} centered onHide={handleModalClose}>
+      <Modal show={rowDelete} centered size='xl' onHide={handleModalClose}>
         <Modal.Header closeButton>
           <Modal.Title>Remove tuple in {selectedTable}</Modal.Title>
         </Modal.Header>
-        <Modal.Body>Are you sure you want to delete this row?</Modal.Body>
+        <Modal.Body>
+          Are you sure you want to delete this row?
+          <Table bordered>
+            <thead>
+              <tr>{rowDelete && Object.keys(rowDelete).map((key) => <th>{key}</th>)}</tr>
+            </thead>
+            <tbody>
+              <tr>
+                {rowDelete &&
+                  Object.values(rowDelete).map((attribute) => {
+                    return <td>{attribute}</td>;
+                  })}
+              </tr>
+            </tbody>
+          </Table>
+        </Modal.Body>
         <Modal.Footer>
           <Button variant='danger' onClick={handleDeleteRow}>
             Delete
