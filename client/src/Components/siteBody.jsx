@@ -16,6 +16,7 @@ const SiteBody = () => {
   const [rowEdit, setRowEdit] = useState();
   const [rowAdd, setRowAdd] = useState();
   const [rowDelete, setRowDelete] = useState();
+  const [errorMessage, setErrorMessage] = useState();
 
   const queryList = [
     {
@@ -97,6 +98,7 @@ const SiteBody = () => {
 
   //Gets selected table data
   const handleTableDropdownSelect = (table) => {
+    setErrorMessage(undefined);
     setSelectedTable(table);
     selectedQuery && setSelectedQuery(undefined);
     setIsLoading(true);
@@ -111,12 +113,13 @@ const SiteBody = () => {
       // .then((result) => console.log(result.data))
       .then((result) => {
         setQueryResult(result.data);
-        setIsLoading(false);
       })
       .catch((error) => console.log(error.message));
+    setIsLoading(false);
   };
 
   const handleQueryDropdownSelect = (query) => {
+    setErrorMessage(undefined);
     selectedTable && setSelectedTable(undefined);
     queryResult && setQueryResult(undefined);
     setSelectedQuery(query);
@@ -131,20 +134,23 @@ const SiteBody = () => {
     e.preventDefault();
 
     const formData = new FormData(e.target);
-    const formJson = Object.fromEntries(Array.from(formData.entries()).filter(([_, v]) => v !== ''));
+    const formJson = Object.fromEntries(formData.entries());
+    setIsLoading(true);
+    setErrorMessage(undefined);
     axios({
       method: 'post',
-      url: `http://localhost:8000:/PHP/queries/${selectedQuery.id}.php`,
+      url: `http://localhost:8000/PHP/queries/${selectedQuery.id}.php`,
       headers: { 'content-type': 'application/json' },
       data: {
         keys: formJson,
       },
     })
       .then((result) => {
-        setQueryResult(result.data);
-        setIsLoading(false);
+        console.log(result.data);
+        result.data.length ? setQueryResult(result.data) : setErrorMessage('No result found.');
       })
-      .catch((error) => console.log(error.message));
+      .catch((error) => console.log(error));
+    setIsLoading(false);
   };
   const handleEditModalSubmit = (e) => {
     e.preventDefault();
@@ -244,6 +250,7 @@ const SiteBody = () => {
         </Form>
       )}
       {(isLoading && <Spinner></Spinner>) ||
+        (errorMessage && <span>{errorMessage}</span>) ||
         (queryResult && (
           <div className='flex flex-col gap-y-1'>
             <div className='flex flex-row items-center gap-2'>
@@ -272,22 +279,26 @@ const SiteBody = () => {
                           {Object.values(row).map((attribute) => {
                             return <td>{attribute}</td>;
                           })}
-                          <td>
-                            <AiFillEdit
-                              className='block h-7 w-7 hover:cursor-pointer'
-                              onClick={() => {
-                                setRowEdit(row);
-                              }}
-                            ></AiFillEdit>
-                          </td>
-                          <td>
-                            <AiFillCloseSquare
-                              className='block h-7 w-7 text-red-700 hover:cursor-pointer hover:text-red-800'
-                              onClick={() => {
-                                setRowDelete(row);
-                              }}
-                            ></AiFillCloseSquare>
-                          </td>
+                          {selectedTable && (
+                            <>
+                              <td>
+                                <AiFillEdit
+                                  className='block h-7 w-7 hover:cursor-pointer'
+                                  onClick={() => {
+                                    setRowEdit(row);
+                                  }}
+                                ></AiFillEdit>
+                              </td>
+                              <td>
+                                <AiFillCloseSquare
+                                  className='block h-7 w-7 text-red-700 hover:cursor-pointer hover:text-red-800'
+                                  onClick={() => {
+                                    setRowDelete(row);
+                                  }}
+                                ></AiFillCloseSquare>
+                              </td>
+                            </>
+                          )}
                         </tr>
                       </>
                     );
