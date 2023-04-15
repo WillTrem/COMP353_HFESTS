@@ -17,7 +17,7 @@
         $fieldList = array();
         
         foreach($row as $key => $value){
-          array_push($fieldList, "$key='$value'");
+          array_push($fieldList, "$key=\"$value\"");
         }
         $joinedAttributes = join(", ", $fieldList);
         
