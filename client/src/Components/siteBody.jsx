@@ -110,12 +110,18 @@ const SiteBody = () => {
     });
   }, []);
 
+  const preQuery = () => {
+    setQueryResult(undefined);
+    setIsLoading(true);
+    setErrorMessage(undefined);
+  };
   //Gets selected table data
   const handleTableDropdownSelect = (table) => {
-    setErrorMessage(undefined);
+    preQuery();
+
     setSelectedTable(table);
     selectedQuery && setSelectedQuery(undefined);
-    setIsLoading(true);
+
     axios({
       method: 'post',
       url: `http://localhost:8000/PHP/selectAllFromTable.php`,
@@ -127,9 +133,13 @@ const SiteBody = () => {
       // .then((result) => console.log(result.data))
       .then((result) => {
         setQueryResult(result.data);
+        setIsLoading(false);
       })
-      .catch((error) => console.log(error.message));
-    setIsLoading(false);
+      .catch((error) => {
+        console.log(error.message);
+        setErrorMessage(error.message);
+        setIsLoading(false);
+      });
   };
 
   const handleQueryDropdownSelect = (query) => {
@@ -146,11 +156,10 @@ const SiteBody = () => {
 
   const handleExecuteQuery = (e) => {
     e.preventDefault();
-
+    preQuery();
     const formData = new FormData(e.target);
     const formJson = Object.fromEntries(formData.entries());
-    setIsLoading(true);
-    setErrorMessage(undefined);
+
     axios({
       method: 'post',
       url: `http://localhost:8000/PHP/queries/${selectedQuery.id}.php`,
@@ -162,9 +171,13 @@ const SiteBody = () => {
       .then((result) => {
         console.log(result.data);
         result.data.length ? setQueryResult(result.data) : setErrorMessage('No result found.');
+        setIsLoading(false);
       })
-      .catch((error) => console.log(error));
-    setIsLoading(false);
+      .catch((error) => {
+        console.log(error);
+        setErrorMessage(error.message);
+        setIsLoading(false);
+      });
   };
   const handleEditModalSubmit = (e) => {
     e.preventDefault();
@@ -263,7 +276,7 @@ const SiteBody = () => {
           </Button>
         </Form>
       )}
-      {(isLoading && <Spinner></Spinner>) ||
+      {(isLoading && <Spinner />) ||
         (errorMessage && <span>{errorMessage}</span>) ||
         (queryResult && (
           <div className='flex flex-col gap-y-1'>
