@@ -28,8 +28,8 @@ const SiteBody = () => {
       id: 7,
       name: '7. Get all employees from facility',
       keys: [
-        { name: 'name', defValue: '' },
-        { name: 'address', defValue: '' },
+        { name: 'name', defValue: 'Maisonneuve-Rosemont Hospital' },
+        { name: 'address', defValue: "5415 Boulevard de l'Assomption" },
       ],
     },
     {

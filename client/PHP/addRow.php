@@ -19,15 +19,15 @@
 
         foreach($row as $key => $value){
           array_push($keyList, $key);
-          array_push($valueList, "'$value'");
+          array_push($valueList, "\"$value\"");
         }
         $joinedKeys= "(" . join(", ", $keyList) . ")";
         $joinedValues= "(" . join(", ", $valueList) . ")";
         
         $sql = "INSERT INTO nbc353_4.$tableName $joinedKeys 
-                VALUES $joinedValues";
-        echo $sql;
+                VALUES $joinedValues;";
         $result = $conn->query($sql);
+        //echo $sql;
         echo $result;
     }
    
