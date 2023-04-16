@@ -347,7 +347,11 @@ const SiteBody = () => {
                 return (
                   <Form.Group>
                     <Form.Label>{attribute[0]}</Form.Label>
-                    <Form.Control placeholder={attribute[1]} name={attribute[0]} />
+                    {attribute[0].includes('date') ? (
+                      <Form.Control as='input' type='date' name={attribute[0]} defaultValue={attribute[1]} />
+                    ) : (
+                      <Form.Control name={attribute[0]} defaultValue={attribute[1]} />
+                    )}
                   </Form.Group>
                 );
               })}
