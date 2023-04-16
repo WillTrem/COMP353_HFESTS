@@ -27,7 +27,7 @@
         $sql = "INSERT INTO nbc353_4.$tableName $joinedKeys 
                 VALUES $joinedValues;";
         $result = $conn->query($sql);
-        //echo $sql;
+        echo $sql;
         echo $result;
     }
    

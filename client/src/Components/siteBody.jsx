@@ -54,18 +54,18 @@ const SiteBody = () => {
       id: 11,
       name: '11. List all doctors & nurses on schedule in the last two weeks for a given facility',
       keys: [
-        { name: 'name', defValue: '' },
-        { name: 'address', defValue: '' },
+        { name: 'facilityName', defValue: 'Humber River Hospital' },
+        { name: 'facilityAddress', defValue: '1235 Wilson Ave' },
       ],
     },
     {
       id: 12,
       name: '12. For a given facility, give the total hours scheduled for every role during a specific period',
       keys: [
-        { name: 'name', defValue: '' },
-        { name: 'address', defValue: '' },
-        { name: 'startDate', defValue: '' },
-        { name: 'endDate', defValue: '' },
+        { name: 'name', defValue: 'Humber River Hospital' },
+        { name: 'address', defValue: '1235 Wilson Ave' },
+        // { name: 'startDate', defValue: '' },
+        // { name: 'endDate', defValue: '' },
       ],
     },
     {
@@ -347,7 +347,8 @@ const SiteBody = () => {
                 return (
                   <Form.Group>
                     <Form.Label>{attribute[0]}</Form.Label>
-                    {attribute[0].includes('date') ? (
+                    {(attribute[1].includes('date') || attribute[1].includes('Date')) &&
+                    selectedTable !== 'Schedules' ? (
                       <Form.Control as='input' type='date' name={attribute[0]} defaultValue={attribute[1]} />
                     ) : (
                       <Form.Control name={attribute[0]} defaultValue={attribute[1]} />
@@ -377,7 +378,8 @@ const SiteBody = () => {
                 return (
                   <Form.Group>
                     <Form.Label>{attribute[1]}</Form.Label>
-                    {attribute[1].includes('date') ? (
+                    {(attribute[1].includes('date') || attribute[1].includes('Date')) &&
+                    selectedTable !== 'Schedules' ? (
                       <Form.Control as='input' type='date' name={attribute[1]} />
                     ) : (
                       <Form.Control name={attribute[1]} />
