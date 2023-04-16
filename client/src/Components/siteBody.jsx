@@ -205,7 +205,7 @@ const SiteBody = () => {
     const formData = new FormData(e.target);
     const formJson = Object.fromEntries(Array.from(formData.entries()).filter(([_, v]) => v !== ''));
     const fullData = { ...rowEdit, ...formJson };
-
+    console.log(fullData);
     axios({
       method: 'post',
       url: `http://localhost:8000/PHP/addRow.php`,
@@ -221,13 +221,15 @@ const SiteBody = () => {
     handleModalClose();
   };
   const handleDeleteRow = () => {
+    const formJson = Object.fromEntries(Object.entries(rowDelete).filter(([_, v]) => v !== null && v !== ''));
+    console.log(formJson);
     axios({
       method: 'post',
       url: `http://localhost:8000/PHP/deleteRow.php`,
       headers: { 'content-type': 'application/json' },
       data: {
         tableName: selectedTable,
-        row: rowDelete,
+        row: formJson,
       },
     }).then((result) => {
       console.log(result.data);
@@ -371,7 +373,11 @@ const SiteBody = () => {
                 return (
                   <Form.Group>
                     <Form.Label>{attribute[1]}</Form.Label>
-                    <Form.Control name={attribute[1]} />
+                    {attribute[1].includes('date') ? (
+                      <Form.Control as='input' type='date' name={attribute[1]} />
+                    ) : (
+                      <Form.Control name={attribute[1]} />
+                    )}
                   </Form.Group>
                 );
               })}

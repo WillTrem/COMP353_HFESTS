@@ -25,7 +25,7 @@
         $sql = "DELETE FROM nbc353_4.$tableName 
                 WHERE $joinedAttributes;";
         $result = $conn->query($sql);
-        echo $result;
+        echo $sql;
     }
    
 $conn->close();
